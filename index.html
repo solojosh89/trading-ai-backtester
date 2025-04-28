@@ -2,15 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Your Website Title</title>
-
-  <!-- Add Chart.js CDN link -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-  <!-- Your other styles or scripts go here -->
-</head>
-
-  <meta charset="UTF-8">
   <title>Simple Trading AI Backtester</title>
   <style>
     body {
@@ -41,6 +32,7 @@
       width: 80%;
       max-width: 800px;
       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+      border: 1px solid #ddd;
     }
 
     #results h2 {
@@ -94,7 +86,6 @@
       border: 1px solid #ddd;
       margin-bottom: 20px;
     }
-
   </style>
 </head>
 <body>
@@ -170,63 +161,6 @@ document.getElementById('backtestButton').onclick = function() {
   document.getElementById('results').style.display = 'block';
 };
 </script>
-<body>
-  <h1>Your Trading Backtester</h1>
 
-  <!-- Your other content, inputs, and buttons here -->
-
-  <!-- Canvas for Chart.js -->
-  <canvas id="backtestChart" width="400" height="200" style="display:none;"></canvas>
-
-  <!-- Your other content continues here -->
-</body>
-<script>
-// Function to simulate the backtest (replace this with your actual data)
-document.getElementById('backtestButton').onclick = function() {
-  // Show the backtest chart
-  document.getElementById('backtestChart').style.display = 'block';
-
-  // Call the function to generate the chart
-  generateBacktestChart();
-};
-
-// Function to generate and display the backtest chart
-function generateBacktestChart() {
-  const ctx = document.getElementById('backtestChart').getContext('2d');
-
-  // Example backtest data (replace with your actual data)
-  const chartData = {
-    labels: ['Trade 1', 'Trade 2', 'Trade 3', 'Trade 4', 'Trade 5'], // Labels for trades
-    datasets: [{
-      label: 'Equity Curve', // Label for the graph
-      data: [100, 110, 120, 125, 130], // Sample equity data (replace with actual results)
-      borderColor: 'rgba(75, 192, 192, 1)', // Line color
-      borderWidth: 1,
-      fill: false
-    }]
-  };
-
-  const chartOptions = {
-    responsive: true,
-    scales: {
-      x: { 
-        beginAtZero: true 
-      },
-      y: { 
-        beginAtZero: true 
-      }
-    }
-  };
-
-  // Create the chart
-  new Chart(ctx, {
-    type: 'line', // Chart type (line chart for equity curve)
-    data: chartData, // The data we defined
-    options: chartOptions // The chart options we defined
-  });
-}
-</script>
-
-  
 </body>
 </html>

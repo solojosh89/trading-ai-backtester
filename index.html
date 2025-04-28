@@ -16,8 +16,7 @@
       color: #0077b6;
     }
 
-    #chart {
-      height: 500px;
+    #chartContainer {
       margin-bottom: 20px;
     }
 
@@ -87,6 +86,9 @@
       margin-bottom: 20px;
     }
   </style>
+
+  <!-- Include Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -97,11 +99,16 @@
 <input type="text" id="symbol" value="BTCUSD" placeholder="e.g., BTCUSD">
 
 <!-- TradingView Chart -->
-<div id="chart">
+<div id="chartContainer">
   <iframe id="chartIframe" 
     src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_b43e1&symbol=BTCUSD&interval=15&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&studies=[]&theme=light&style=1&timezone=Etc/UTC&studies_overrides={}" 
     width="100%" height="500" frameborder="0" allowtransparency="true" scrolling="no">
   </iframe>
+</div>
+
+<!-- Chart.js - Placeholder for Backtest Graph -->
+<div id="chartContainer">
+  <canvas id="backtestChart" width="400" height="200"></canvas>
 </div>
 
 <!-- Run Backtest Button -->
@@ -156,6 +163,39 @@ document.getElementById('backtestButton').onclick = function() {
   document.getElementById('profitFactor').textContent = profitFactor;
   document.getElementById('avgTradeDuration').textContent = `${avgTradeDuration} minutes`;
   document.getElementById('riskRewardRatio').textContent = riskRewardRatio;
+
+  // Display chart using Chart.js
+  const ctx = document.getElementById('backtestChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Trade 1', 'Trade 2', 'Trade 3', 'Trade 4', 'Trade 5'], // Example labels
+      datasets: [{
+        label: 'Profit',
+        data: [0, profit, profit * 1.5, profit * 2, profit * 2.5], // Example profit values
+        borderColor: '#0077b6',
+        fill: false,
+        tension: 0.1
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Trades'
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Profit (%)'
+          }
+        }
+      }
+    }
+  });
 
   // Show the result section
   document.getElementById('results').style.display = 'block';

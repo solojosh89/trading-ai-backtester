@@ -19,22 +19,22 @@
     /* Flex container for the chart and results */
     #mainContainer {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
+      align-items: flex-start;
       gap: 30px;
+      margin-top: 30px;
     }
 
     /* Chart styling */
     #chartContainer {
       width: 100%;
-      max-width: 500px; /* Makes the chart smaller */
-      margin-bottom: 20px;
+      max-width: 400px;
     }
 
     /* Result box styling */
     #results {
       width: 100%;
-      max-width: 500px;
+      max-width: 450px;
       text-align: left;
       font-size: 18px;
       background-color: #fff;
@@ -81,6 +81,7 @@
       border: none;
       border-radius: 5px;
       transition: background-color 0.3s ease;
+      margin-top: 10px;
     }
 
     #backtestButton:hover {
@@ -93,17 +94,16 @@
       width: 200px;
       border-radius: 5px;
       border: 1px solid #ddd;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
 
-    /* Media Query for smaller screens */
+    /* Responsive behavior */
     @media (max-width: 768px) {
       #mainContainer {
         flex-direction: column;
         align-items: center;
       }
     }
-
   </style>
 
   <!-- Include Chart.js -->
@@ -118,57 +118,48 @@
 <input type="text" id="symbol" value="BTCUSD" placeholder="e.g., BTCUSD">
 
 <!-- Run Backtest Button -->
+<br>
 <button id="backtestButton">Run Backtest 🚀</button>
 
 <!-- Flex container for chart and results -->
 <div id="mainContainer">
-  <!-- TradingView Chart -->
+  
+  <!-- Chart Section -->
   <div id="chartContainer">
-    <canvas id="backtestChart" width="400" height="200"></canvas>
+    <canvas id="backtestChart" width="400" height="300"></canvas>
   </div>
 
   <!-- Result Section -->
   <div id="results" style="display:none;">
     <h2>Backtest Results</h2>
-    <div class="result-item"><span class="result-label">Total Trades:</span><span class="result-value" id="totalTrades">50</span></div>
-    <div class="result-item"><span class="result-label">Win Rate:</span><span class="result-value" id="winRate">78%</span></div>
-    <div class="result-item"><span class="result-label">Total Profit:</span><span class="result-value" id="totalProfit">+56%</span></div>
-    <div class="result-item"><span class="result-label">Drawdown:</span><span class="result-value" id="drawdown">-2%</span></div>
-    <div class="result-item"><span class="result-label">Sharpe Ratio:</span><span class="result-value" id="sharpeRatio">1.72</span></div>
-    <div class="result-item"><span class="result-label">Profit Factor:</span><span class="result-value" id="profitFactor">1.91</span></div>
-    <div class="result-item"><span class="result-label">Average Trade Duration:</span><span class="result-value" id="avgTradeDuration">49 minutes</span></div>
-    <div class="result-item"><span class="result-label">Risk/Reward Ratio:</span><span class="result-value" id="riskRewardRatio">1.35</span></div>
+    <div class="result-item"><span class="result-label">Total Trades:</span><span class="result-value" id="totalTrades">0</span></div>
+    <div class="result-item"><span class="result-label">Win Rate:</span><span class="result-value" id="winRate">0%</span></div>
+    <div class="result-item"><span class="result-label">Total Profit:</span><span class="result-value" id="totalProfit">0%</span></div>
+    <div class="result-item"><span class="result-label">Drawdown:</span><span class="result-value" id="drawdown">0%</span></div>
+    <div class="result-item"><span class="result-label">Sharpe Ratio:</span><span class="result-value" id="sharpeRatio">0</span></div>
+    <div class="result-item"><span class="result-label">Profit Factor:</span><span class="result-value" id="profitFactor">0</span></div>
+    <div class="result-item"><span class="result-label">Average Trade Duration:</span><span class="result-value" id="avgTradeDuration">0 minutes</span></div>
+    <div class="result-item"><span class="result-label">Risk/Reward Ratio:</span><span class="result-value" id="riskRewardRatio">0</span></div>
   </div>
 </div>
 
 <script>
-// Function to update the chart when symbol is changed
-function updateChart() {
-  const symbol = document.getElementById('symbol').value.trim().toUpperCase(); // Clean the input and make it uppercase
-  
-  // Update TradingView chart iframe with the new symbol
-  const iframe = document.getElementById('chartIframe');
-  iframe.src = `https://s.tradingview.com/widgetembed/?frameElementId=tradingview_b43e1&symbol=${symbol}&interval=15&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&studies=[]&theme=light&style=1&timezone=Etc/UTC&studies_overrides={}`;
-}
+let chartInstance = null; // To store Chart.js instance so we can destroy old charts
 
-// Event listener for input change
-document.getElementById('symbol').addEventListener('input', updateChart);
-
-// Backtest Button click functionality (fake data for now)
 document.getElementById('backtestButton').onclick = function() {
-  const symbol = document.getElementById('symbol').value.trim().toUpperCase(); // Clean input
+  const symbol = document.getElementById('symbol').value.trim().toUpperCase();
   
-  // Fake backtest data for now
+  // Fake backtest data generation
   const trades = 50;
-  const winRate = Math.floor(Math.random() * 50) + 50; // Random between 50-100%
-  const profit = (winRate - 50) * 2; // Fake profit
-  const drawdown = Math.floor(Math.random() * 20); // Random drawdown between 0% and 20%
-  const sharpeRatio = (Math.random() * 2 + 1).toFixed(2); // Fake Sharpe Ratio between 1 and 3
-  const profitFactor = (Math.random() * 1.5 + 1.5).toFixed(2); // Fake profit factor
-  const avgTradeDuration = Math.floor(Math.random() * 60 + 5); // Random average duration (in minutes)
-  const riskRewardRatio = (Math.random() * 2 + 1).toFixed(2); // Fake risk/reward ratio
-  
-  // Populate the result section with values
+  const winRate = Math.floor(Math.random() * 40) + 60; // Between 60%-100%
+  const profit = (winRate - 50) * 2;
+  const drawdown = Math.floor(Math.random() * 15); // 0-15%
+  const sharpeRatio = (Math.random() * 2 + 1).toFixed(2);
+  const profitFactor = (Math.random() * 1.5 + 1.5).toFixed(2);
+  const avgTradeDuration = Math.floor(Math.random() * 60 + 5);
+  const riskRewardRatio = (Math.random() * 2 + 1).toFixed(2);
+
+  // Update Result Details
   document.getElementById('totalTrades').textContent = trades;
   document.getElementById('winRate').textContent = `${winRate}%`;
   document.getElementById('totalProfit').textContent = `+${profit}%`;
@@ -178,41 +169,51 @@ document.getElementById('backtestButton').onclick = function() {
   document.getElementById('avgTradeDuration').textContent = `${avgTradeDuration} minutes`;
   document.getElementById('riskRewardRatio').textContent = riskRewardRatio;
 
-  // Display chart using Chart.js
+  // Show results
+  document.getElementById('results').style.display = 'block';
+
+  // Handle Chart.js
   const ctx = document.getElementById('backtestChart').getContext('2d');
-  new Chart(ctx, {
+  
+  // Destroy old chart if it exists
+  if (chartInstance !== null) {
+    chartInstance.destroy();
+  }
+
+  chartInstance = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: ['Trade 1', 'Trade 2', 'Trade 3', 'Trade 4', 'Trade 5'], // Example labels
+      labels: ['Start', 'Trade 10', 'Trade 20', 'Trade 30', 'Trade 40', 'End'],
       datasets: [{
-        label: 'Profit',
-        data: [0, profit, profit * 1.5, profit * 2, profit * 2.5], // Example profit values
+        label: `${symbol} Profit Curve`,
+        data: [0, profit * 0.3, profit * 0.5, profit * 0.7, profit * 0.9, profit],
         borderColor: '#0077b6',
-        fill: false,
-        tension: 0.1
+        backgroundColor: 'rgba(0, 119, 182, 0.1)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 3,
+        pointBackgroundColor: '#0077b6'
       }]
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       scales: {
         x: {
           title: {
             display: true,
-            text: 'Trades'
+            text: 'Trade Progress'
           }
         },
         y: {
           title: {
             display: true,
-            text: 'Profit (%)'
+            text: 'Profit %'
           }
         }
       }
     }
   });
-
-  // Show the result section
-  document.getElementById('results').style.display = 'block';
 };
 </script>
 

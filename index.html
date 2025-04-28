@@ -16,20 +16,30 @@
       color: #0077b6;
     }
 
+    /* Flex container for the chart and results */
+    #mainContainer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    /* Chart styling */
     #chartContainer {
+      width: 100%;
+      max-width: 500px; /* Makes the chart smaller */
       margin-bottom: 20px;
     }
 
+    /* Result box styling */
     #results {
-      margin-top: 20px;
+      width: 100%;
+      max-width: 500px;
       text-align: left;
       font-size: 18px;
-      display: inline-block;
       background-color: #fff;
       border-radius: 10px;
       padding: 20px;
-      width: 80%;
-      max-width: 800px;
       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
       border: 1px solid #ddd;
     }
@@ -85,6 +95,15 @@
       border: 1px solid #ddd;
       margin-bottom: 20px;
     }
+
+    /* Media Query for smaller screens */
+    @media (max-width: 768px) {
+      #mainContainer {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+
   </style>
 
   <!-- Include Chart.js -->
@@ -98,33 +117,28 @@
 <label for="symbol">Enter Symbol (e.g., BTCUSD, AAPL): </label>
 <input type="text" id="symbol" value="BTCUSD" placeholder="e.g., BTCUSD">
 
-<!-- TradingView Chart -->
-<div id="chartContainer">
-  <iframe id="chartIframe" 
-    src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_b43e1&symbol=BTCUSD&interval=15&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&studies=[]&theme=light&style=1&timezone=Etc/UTC&studies_overrides={}" 
-    width="100%" height="500" frameborder="0" allowtransparency="true" scrolling="no">
-  </iframe>
-</div>
-
-<!-- Chart.js - Placeholder for Backtest Graph -->
-<div id="chartContainer">
-  <canvas id="backtestChart" width="400" height="200"></canvas>
-</div>
-
 <!-- Run Backtest Button -->
 <button id="backtestButton">Run Backtest 🚀</button>
 
-<!-- Result Section -->
-<div id="results" style="display:none;">
-  <h2>Backtest Results</h2>
-  <div class="result-item"><span class="result-label">Total Trades:</span><span class="result-value" id="totalTrades">50</span></div>
-  <div class="result-item"><span class="result-label">Win Rate:</span><span class="result-value" id="winRate">78%</span></div>
-  <div class="result-item"><span class="result-label">Total Profit:</span><span class="result-value" id="totalProfit">+56%</span></div>
-  <div class="result-item"><span class="result-label">Drawdown:</span><span class="result-value" id="drawdown">-2%</span></div>
-  <div class="result-item"><span class="result-label">Sharpe Ratio:</span><span class="result-value" id="sharpeRatio">1.72</span></div>
-  <div class="result-item"><span class="result-label">Profit Factor:</span><span class="result-value" id="profitFactor">1.91</span></div>
-  <div class="result-item"><span class="result-label">Average Trade Duration:</span><span class="result-value" id="avgTradeDuration">49 minutes</span></div>
-  <div class="result-item"><span class="result-label">Risk/Reward Ratio:</span><span class="result-value" id="riskRewardRatio">1.35</span></div>
+<!-- Flex container for chart and results -->
+<div id="mainContainer">
+  <!-- TradingView Chart -->
+  <div id="chartContainer">
+    <canvas id="backtestChart" width="400" height="200"></canvas>
+  </div>
+
+  <!-- Result Section -->
+  <div id="results" style="display:none;">
+    <h2>Backtest Results</h2>
+    <div class="result-item"><span class="result-label">Total Trades:</span><span class="result-value" id="totalTrades">50</span></div>
+    <div class="result-item"><span class="result-label">Win Rate:</span><span class="result-value" id="winRate">78%</span></div>
+    <div class="result-item"><span class="result-label">Total Profit:</span><span class="result-value" id="totalProfit">+56%</span></div>
+    <div class="result-item"><span class="result-label">Drawdown:</span><span class="result-value" id="drawdown">-2%</span></div>
+    <div class="result-item"><span class="result-label">Sharpe Ratio:</span><span class="result-value" id="sharpeRatio">1.72</span></div>
+    <div class="result-item"><span class="result-label">Profit Factor:</span><span class="result-value" id="profitFactor">1.91</span></div>
+    <div class="result-item"><span class="result-label">Average Trade Duration:</span><span class="result-value" id="avgTradeDuration">49 minutes</span></div>
+    <div class="result-item"><span class="result-label">Risk/Reward Ratio:</span><span class="result-value" id="riskRewardRatio">1.35</span></div>
+  </div>
 </div>
 
 <script>

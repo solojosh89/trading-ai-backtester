@@ -23,13 +23,13 @@
 </div>
 
 <!-- Run Backtest Button -->
-<button onclick="runBacktest()">Run Backtest 🚀</button>
+<button id="backtestButton">Run Backtest 🚀</button>
 
 <!-- Result Section -->
 <div id="results"></div>
 
 <script>
-function runBacktest() {
+document.getElementById('backtestButton').onclick = function() {
   const trades = 50;
   const winRate = Math.floor(Math.random() * 50) + 50; // Random between 50-100%
   const profit = (winRate - 50) * 2; // fake profit
@@ -40,7 +40,7 @@ function runBacktest() {
     <p>Win Rate: ${winRate}%</p>
     <p>Total Profit: +${profit}%</p>
   `;
-}
+};
 </script>
 
 </body>

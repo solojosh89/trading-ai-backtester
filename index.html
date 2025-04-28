@@ -120,11 +120,6 @@
   <div class="result-item"><span class="result-label">Risk/Reward Ratio:</span><span class="result-value" id="riskRewardRatio">1.35</span></div>
 </div>
 
-<!-- Canvas for Graphing -->
-<canvas id="backtestChart" width="400" height="200" style="display:none;"></canvas>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
 // Function to update the chart when symbol is changed
 function updateChart() {
@@ -164,35 +159,6 @@ document.getElementById('backtestButton').onclick = function() {
 
   // Show the result section
   document.getElementById('results').style.display = 'block';
-  
-  // Show and update the graph with random data (for demo purposes)
-  const ctx = document.getElementById('backtestChart').getContext('2d');
-  const chartData = {
-    labels: Array.from({length: 50}, (_, i) => `Trade ${i+1}`), // 50 trades
-    datasets: [{
-      label: 'Equity Curve',
-      data: Array.from({length: 50}, () => Math.floor(Math.random() * 100) + 100), // Fake profits for each trade
-      borderColor: 'rgba(75, 192, 192, 1)',
-      borderWidth: 1,
-      fill: false
-    }]
-  };
-  
-  const chartOptions = {
-    responsive: true,
-    scales: {
-      x: { beginAtZero: true },
-      y: { beginAtZero: true }
-    }
-  };
-
-  const backtestChart = new Chart(ctx, {
-    type: 'line',
-    data: chartData,
-    options: chartOptions
-  });
-
-  document.getElementById('backtestChart').style.display = 'block';
 };
 </script>
 

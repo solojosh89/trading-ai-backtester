@@ -33,12 +33,21 @@
 <div id="results"></div>
 
 <script>
-document.getElementById('backtestButton').onclick = function() {
-  const symbol = document.getElementById('symbol').value.trim();
+// Function to update the chart when symbol is changed
+function updateChart() {
+  const symbol = document.getElementById('symbol').value.trim().toUpperCase(); // Clean the input and make it uppercase
   
   // Update TradingView chart iframe with the new symbol
   const iframe = document.getElementById('chartIframe');
   iframe.src = `https://s.tradingview.com/widgetembed/?frameElementId=tradingview_b43e1&symbol=${symbol}&interval=15&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&studies=[]&theme=light&style=1&timezone=Etc/UTC&studies_overrides={}`;
+}
+
+// Event listener for input change
+document.getElementById('symbol').addEventListener('input', updateChart);
+
+// Backtest Button click functionality (fake data for now)
+document.getElementById('backtestButton').onclick = function() {
+  const symbol = document.getElementById('symbol').value.trim().toUpperCase(); // Clean input
   
   // Show fake backtest results for now
   const trades = 50;

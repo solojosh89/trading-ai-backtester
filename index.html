@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Trading AI Backtester</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+    #chart { height: 500px; margin-bottom: 20px; }
+    #results { margin-top: 20px; }
+    button { padding: 10px 20px; font-size: 18px; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<h1>Trading Analysis Backtester 🔥</h1>
+
+<!-- TradingView Chart -->
+<div id="chart">
+  <iframe 
+    src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_b43e1&symbol=BTCUSD&interval=15&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&studies=[]&theme=light&style=1&timezone=Etc/UTC&studies_overrides={}" 
+    width="100%" height="500" frameborder="0" allowtransparency="true" scrolling="no">
+  </iframe>
+</div>
+
+<!-- Run Backtest Button -->
+<button onclick="runBacktest()">Run Backtest 🚀</button>
+
+<!-- Result Section -->
+<div id="results"></div>
+
+<script>
+function runBacktest() {
+  const trades = 50;
+  const winRate = Math.floor(Math.random() * 50) + 50; // Random between 50-100%
+  const profit = (winRate - 50) * 2; // fake profit
+  
+  document.getElementById('results').innerHTML = `
+    <h2>Results:</h2>
+    <p>Number of Trades: ${trades}</p>
+    <p>Win Rate: ${winRate}%</p>
+    <p>Total Profit: +${profit}%</p>
+  `;
+}
+</script>
+
+</body>
+</html>

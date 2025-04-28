@@ -5,7 +5,7 @@
   <title>Simple Trading AI Backtester</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Poppins', sans-serif;
       text-align: center;
       margin: 20px;
       background-color: #f4f7fc;
@@ -14,34 +14,41 @@
 
     h1 {
       color: #0077b6;
+      font-size: 32px;
     }
 
-    /* Flex container for the chart and results */
     #mainContainer {
       display: flex;
       justify-content: center;
       align-items: flex-start;
       gap: 30px;
       margin-top: 30px;
+      flex-wrap: wrap;
     }
 
-    /* Chart styling */
     #chartContainer {
       width: 100%;
       max-width: 400px;
+      height: 300px;
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
     }
 
-    /* Result box styling */
+    #backtestChart {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
     #results {
       width: 100%;
       max-width: 450px;
-      text-align: left;
-      font-size: 18px;
-      background-color: #fff;
-      border-radius: 10px;
+      background: white;
+      border-radius: 12px;
       padding: 20px;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-      border: 1px solid #ddd;
+      text-align: left;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
     }
 
     #results h2 {
@@ -52,34 +59,24 @@
     }
 
     .result-item {
-      padding: 10px;
-      border-bottom: 1px solid #f1f1f1;
-      font-size: 16px;
+      margin-bottom: 12px;
+      font-size: 17px;
       color: #333;
     }
 
-    .result-item:last-child {
-      border-bottom: none;
-    }
-
     .result-label {
-      font-weight: bold;
+      font-weight: 600;
       color: #0077b6;
     }
 
-    .result-value {
-      margin-left: 10px;
-      font-weight: normal;
-    }
-
     #backtestButton {
-      padding: 12px 24px;
+      padding: 12px 28px;
       font-size: 18px;
       cursor: pointer;
       background-color: #0077b6;
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       transition: background-color 0.3s ease;
       margin-top: 10px;
     }
@@ -91,13 +88,33 @@
     #symbol {
       padding: 10px;
       font-size: 18px;
-      width: 200px;
-      border-radius: 5px;
-      border: 1px solid #ddd;
+      width: 250px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
       margin-bottom: 10px;
     }
 
-    /* Responsive behavior */
+    /* Loading Spinner */
+    #loadingSpinner {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .spinner {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #0077b6;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
     @media (max-width: 768px) {
       #mainContainer {
         flex-direction: column;
@@ -106,114 +123,124 @@
     }
   </style>
 
-  <!-- Include Chart.js -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
 <h1>Trading Analysis Backtester 🔥</h1>
 
-<!-- Input for Symbol -->
-<label for="symbol">Enter Symbol (e.g., BTCUSD, AAPL): </label>
+<!-- Inputs -->
+<label for="symbol">Enter Symbol (e.g., BTCUSD, AAPL):</label>
+<br>
 <input type="text" id="symbol" value="BTCUSD" placeholder="e.g., BTCUSD">
-
-<!-- Run Backtest Button -->
 <br>
 <button id="backtestButton">Run Backtest 🚀</button>
 
-<!-- Flex container for chart and results -->
+<!-- Spinner -->
+<div id="loadingSpinner">
+  <div class="spinner"></div>
+</div>
+
+<!-- Container for Chart and Results -->
 <div id="mainContainer">
   
-  <!-- Chart Section -->
+  <!-- Chart -->
   <div id="chartContainer">
-    <canvas id="backtestChart" width="400" height="300"></canvas>
+    <canvas id="backtestChart"></canvas>
   </div>
 
-  <!-- Result Section -->
+  <!-- Results -->
   <div id="results" style="display:none;">
     <h2>Backtest Results</h2>
-    <div class="result-item"><span class="result-label">Total Trades:</span><span class="result-value" id="totalTrades">0</span></div>
-    <div class="result-item"><span class="result-label">Win Rate:</span><span class="result-value" id="winRate">0%</span></div>
-    <div class="result-item"><span class="result-label">Total Profit:</span><span class="result-value" id="totalProfit">0%</span></div>
-    <div class="result-item"><span class="result-label">Drawdown:</span><span class="result-value" id="drawdown">0%</span></div>
-    <div class="result-item"><span class="result-label">Sharpe Ratio:</span><span class="result-value" id="sharpeRatio">0</span></div>
-    <div class="result-item"><span class="result-label">Profit Factor:</span><span class="result-value" id="profitFactor">0</span></div>
-    <div class="result-item"><span class="result-label">Average Trade Duration:</span><span class="result-value" id="avgTradeDuration">0 minutes</span></div>
-    <div class="result-item"><span class="result-label">Risk/Reward Ratio:</span><span class="result-value" id="riskRewardRatio">0</span></div>
+    <div class="result-item"><span class="result-label">Total Trades:</span> <span id="totalTrades">0</span></div>
+    <div class="result-item"><span class="result-label">Win Rate:</span> <span id="winRate">0%</span></div>
+    <div class="result-item"><span class="result-label">Total Profit:</span> <span id="totalProfit">0%</span></div>
+    <div class="result-item"><span class="result-label">Drawdown:</span> <span id="drawdown">0%</span></div>
+    <div class="result-item"><span class="result-label">Sharpe Ratio:</span> <span id="sharpeRatio">0</span></div>
+    <div class="result-item"><span class="result-label">Profit Factor:</span> <span id="profitFactor">0</span></div>
+    <div class="result-item"><span class="result-label">Average Trade Duration:</span> <span id="avgTradeDuration">0 minutes</span></div>
+    <div class="result-item"><span class="result-label">Risk/Reward Ratio:</span> <span id="riskRewardRatio">0</span></div>
   </div>
+
 </div>
 
 <script>
-let chartInstance = null; // To store Chart.js instance so we can destroy old charts
+let chartInstance = null;
 
 document.getElementById('backtestButton').onclick = function() {
   const symbol = document.getElementById('symbol').value.trim().toUpperCase();
-  
-  // Fake backtest data generation
-  const trades = 50;
-  const winRate = Math.floor(Math.random() * 40) + 60; // Between 60%-100%
-  const profit = (winRate - 50) * 2;
-  const drawdown = Math.floor(Math.random() * 15); // 0-15%
-  const sharpeRatio = (Math.random() * 2 + 1).toFixed(2);
-  const profitFactor = (Math.random() * 1.5 + 1.5).toFixed(2);
-  const avgTradeDuration = Math.floor(Math.random() * 60 + 5);
-  const riskRewardRatio = (Math.random() * 2 + 1).toFixed(2);
 
-  // Update Result Details
-  document.getElementById('totalTrades').textContent = trades;
-  document.getElementById('winRate').textContent = `${winRate}%`;
-  document.getElementById('totalProfit').textContent = `+${profit}%`;
-  document.getElementById('drawdown').textContent = `-${drawdown}%`;
-  document.getElementById('sharpeRatio').textContent = sharpeRatio;
-  document.getElementById('profitFactor').textContent = profitFactor;
-  document.getElementById('avgTradeDuration').textContent = `${avgTradeDuration} minutes`;
-  document.getElementById('riskRewardRatio').textContent = riskRewardRatio;
+  // Show loading spinner
+  document.getElementById('loadingSpinner').style.display = 'block';
+  document.getElementById('results').style.display = 'none';
 
-  // Show results
-  document.getElementById('results').style.display = 'block';
+  setTimeout(() => {
+    // Hide spinner after 2 seconds (fake delay to feel realistic)
+    document.getElementById('loadingSpinner').style.display = 'none';
+    document.getElementById('results').style.display = 'block';
 
-  // Handle Chart.js
-  const ctx = document.getElementById('backtestChart').getContext('2d');
-  
-  // Destroy old chart if it exists
-  if (chartInstance !== null) {
-    chartInstance.destroy();
-  }
+    // Fake backtest data
+    const trades = 50;
+    const winRate = Math.floor(Math.random() * 40) + 60;
+    const profit = (winRate - 50) * 2;
+    const drawdown = Math.floor(Math.random() * 15);
+    const sharpeRatio = (Math.random() * 2 + 1).toFixed(2);
+    const profitFactor = (Math.random() * 1.5 + 1.5).toFixed(2);
+    const avgTradeDuration = Math.floor(Math.random() * 60 + 5);
+    const riskRewardRatio = (Math.random() * 2 + 1).toFixed(2);
 
-  chartInstance = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: ['Start', 'Trade 10', 'Trade 20', 'Trade 30', 'Trade 40', 'End'],
-      datasets: [{
-        label: `${symbol} Profit Curve`,
-        data: [0, profit * 0.3, profit * 0.5, profit * 0.7, profit * 0.9, profit],
-        borderColor: '#0077b6',
-        backgroundColor: 'rgba(0, 119, 182, 0.1)',
-        fill: true,
-        tension: 0.4,
-        pointRadius: 3,
-        pointBackgroundColor: '#0077b6'
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: {
-          title: {
-            display: true,
-            text: 'Trade Progress'
-          }
-        },
-        y: {
-          title: {
-            display: true,
-            text: 'Profit %'
+    document.getElementById('totalTrades').textContent = trades;
+    document.getElementById('winRate').textContent = `${winRate}%`;
+    document.getElementById('totalProfit').textContent = `+${profit}%`;
+    document.getElementById('drawdown').textContent = `-${drawdown}%`;
+    document.getElementById('sharpeRatio').textContent = sharpeRatio;
+    document.getElementById('profitFactor').textContent = profitFactor;
+    document.getElementById('avgTradeDuration').textContent = `${avgTradeDuration} minutes`;
+    document.getElementById('riskRewardRatio').textContent = riskRewardRatio;
+
+    // Chart
+    const ctx = document.getElementById('backtestChart').getContext('2d');
+    if (chartInstance !== null) {
+      chartInstance.destroy();
+    }
+
+    chartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Start', 'Trade 10', 'Trade 20', 'Trade 30', 'Trade 40', 'End'],
+        datasets: [{
+          label: `${symbol} Profit Curve`,
+          data: [0, profit * 0.25, profit * 0.5, profit * 0.7, profit * 0.85, profit],
+          borderColor: '#0077b6',
+          backgroundColor: 'rgba(0, 119, 182, 0.2)',
+          fill: true,
+          tension: 0.4,
+          pointRadius: 4,
+          pointBackgroundColor: '#0077b6'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Trade Progress'
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Profit %'
+            }
           }
         }
       }
-    }
-  });
+    });
+
+  }, 2000); // 2 seconds loading
 };
 </script>
 

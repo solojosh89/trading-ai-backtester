@@ -60,6 +60,7 @@
     .results-section {
       display: flex;
       justify-content: space-between;
+      align-items: flex-start;
       gap: 30px;
       flex-wrap: wrap;
     }
@@ -100,6 +101,30 @@
       height: 300px;
     }
 
+    /* Loading Spinner */
+    #loading {
+      display: none;
+      text-align: center;
+      margin: 20px 0;
+      font-size: 18px;
+      color: #0077b6;
+    }
+
+    .spinner {
+      margin: 10px auto;
+      width: 40px;
+      height: 40px;
+      border: 4px solid #ccc;
+      border-top: 4px solid #0077b6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
   </style>
 </head>
 <body>
@@ -108,6 +133,12 @@
 
 <input type="text" id="symbol" value="BTCUSD" placeholder="Enter symbol...">
 <button id="backtestButton">Run Backtest 🚀</button>
+
+<!-- Loading Spinner -->
+<div id="loading">
+  <div class="spinner"></div>
+  Running backtest...
+</div>
 
 <div id="chartContainer">
   <iframe id="chartIframe" src="https://s.tradingview.com/widgetembed/?symbol=BTCUSD&interval=15&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&theme=light&style=1&timezone=Etc/UTC" allowtransparency="true" scrolling="no"></iframe>
@@ -140,60 +171,76 @@ document.getElementById('symbol').addEventListener('input', () => {
   document.getElementById('chartIframe').src = `https://s.tradingview.com/widgetembed/?symbol=${symbol}&interval=15&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&theme=light&style=1&timezone=Etc/UTC`;
 });
 
+let performanceChartInstance = null;
+
 // Backtest Button Click
 document.getElementById('backtestButton').onclick = function() {
-  const trades = 50;
-  const winRate = Math.floor(Math.random() * 50) + 50;
-  const profit = (winRate - 50) * 2;
-  const drawdown = Math.floor(Math.random() * 20);
-  const sharpeRatio = (Math.random() * 2 + 1).toFixed(2);
-  const profitFactor = (Math.random() * 1.5 + 1.5).toFixed(2);
-  const avgTradeDuration = Math.floor(Math.random() * 60 + 5);
-  const riskRewardRatio = (Math.random() * 2 + 1).toFixed(2);
+  // Show loading
+  document.getElementById('loading').style.display = 'block';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('graphContainer').style.display = 'none';
 
-  document.getElementById('totalTrades').textContent = trades;
-  document.getElementById('winRate').textContent = `${winRate}%`;
-  document.getElementById('totalProfit').textContent = `+${profit}%`;
-  document.getElementById('drawdown').textContent = `-${drawdown}%`;
-  document.getElementById('sharpeRatio').textContent = sharpeRatio;
-  document.getElementById('profitFactor').textContent = profitFactor;
-  document.getElementById('avgTradeDuration').textContent = `${avgTradeDuration} minutes`;
-  document.getElementById('riskRewardRatio').textContent = riskRewardRatio;
+  // Simulate backtest delay
+  setTimeout(() => {
+    const trades = 50;
+    const winRate = Math.floor(Math.random() * 50) + 50;
+    const profit = (winRate - 50) * 2;
+    const drawdown = Math.floor(Math.random() * 20);
+    const sharpeRatio = (Math.random() * 2 + 1).toFixed(2);
+    const profitFactor = (Math.random() * 1.5 + 1.5).toFixed(2);
+    const avgTradeDuration = Math.floor(Math.random() * 60 + 5);
+    const riskRewardRatio = (Math.random() * 2 + 1).toFixed(2);
 
-  document.getElementById('results').style.display = 'block';
-  document.getElementById('graphContainer').style.display = 'block';
+    document.getElementById('totalTrades').textContent = trades;
+    document.getElementById('winRate').textContent = `${winRate}%`;
+    document.getElementById('totalProfit').textContent = `+${profit}%`;
+    document.getElementById('drawdown').textContent = `-${drawdown}%`;
+    document.getElementById('sharpeRatio').textContent = sharpeRatio;
+    document.getElementById('profitFactor').textContent = profitFactor;
+    document.getElementById('avgTradeDuration').textContent = `${avgTradeDuration} minutes`;
+    document.getElementById('riskRewardRatio').textContent = riskRewardRatio;
 
-  // Draw Chart.js graph
-  const ctx = document.getElementById('performanceChart').getContext('2d');
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Win Rate', 'Profit', 'Drawdown', 'Sharpe', 'Profit Factor'],
-      datasets: [{
-        label: 'Performance Metrics',
-        data: [winRate, profit, drawdown, sharpeRatio, profitFactor],
-        backgroundColor: [
-          '#0077b6',
-          '#00b4d8',
-          '#90e0ef',
-          '#48cae4',
-          '#0096c7'
-        ],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false }
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('graphContainer').style.display = 'block';
+    document.getElementById('loading').style.display = 'none';
+
+    // Destroy previous chart instance if it exists
+    if (performanceChartInstance) {
+      performanceChartInstance.destroy();
+    }
+
+    // Draw Chart.js graph
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    performanceChartInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Win Rate', 'Profit', 'Drawdown', 'Sharpe', 'Profit Factor'],
+        datasets: [{
+          label: 'Performance Metrics',
+          data: [winRate, profit, drawdown, sharpeRatio, profitFactor],
+          backgroundColor: [
+            '#0077b6',
+            '#00b4d8',
+            '#90e0ef',
+            '#48cae4',
+            '#0096c7'
+          ],
+          borderWidth: 1
+        }]
       },
-      scales: {
-        y: {
-          beginAtZero: true
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true
+          }
         }
       }
-    }
-  });
+    });
+  }, 1500); // 1.5 seconds loading simulation
 };
 </script>
 

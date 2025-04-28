@@ -4,10 +4,88 @@
   <meta charset="UTF-8">
   <title>Simple Trading AI Backtester</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
-    #chart { height: 500px; margin-bottom: 20px; }
-    #results { margin-top: 20px; text-align: left; font-size: 18px; }
-    button { padding: 10px 20px; font-size: 18px; cursor: pointer; }
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+      background-color: #f4f7fc;
+      color: #333;
+    }
+
+    h1 {
+      color: #0077b6;
+    }
+
+    #chart {
+      height: 500px;
+      margin-bottom: 20px;
+    }
+
+    #results {
+      margin-top: 20px;
+      text-align: left;
+      font-size: 18px;
+      display: inline-block;
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      width: 80%;
+      max-width: 800px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #results h2 {
+      font-size: 24px;
+      color: #0077b6;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .result-item {
+      padding: 10px;
+      border-bottom: 1px solid #f1f1f1;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .result-item:last-child {
+      border-bottom: none;
+    }
+
+    .result-label {
+      font-weight: bold;
+      color: #0077b6;
+    }
+
+    .result-value {
+      margin-left: 10px;
+      font-weight: normal;
+    }
+
+    #backtestButton {
+      padding: 12px 24px;
+      font-size: 18px;
+      cursor: pointer;
+      background-color: #0077b6;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    #backtestButton:hover {
+      background-color: #005f8d;
+    }
+
+    #symbol {
+      padding: 10px;
+      font-size: 18px;
+      width: 200px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      margin-bottom: 20px;
+    }
+
   </style>
 </head>
 <body>
@@ -30,7 +108,17 @@
 <button id="backtestButton">Run Backtest 🚀</button>
 
 <!-- Result Section -->
-<div id="results"></div>
+<div id="results" style="display:none;">
+  <h2>Backtest Results</h2>
+  <div class="result-item"><span class="result-label">Total Trades:</span><span class="result-value" id="totalTrades">50</span></div>
+  <div class="result-item"><span class="result-label">Win Rate:</span><span class="result-value" id="winRate">78%</span></div>
+  <div class="result-item"><span class="result-label">Total Profit:</span><span class="result-value" id="totalProfit">+56%</span></div>
+  <div class="result-item"><span class="result-label">Drawdown:</span><span class="result-value" id="drawdown">-2%</span></div>
+  <div class="result-item"><span class="result-label">Sharpe Ratio:</span><span class="result-value" id="sharpeRatio">1.72</span></div>
+  <div class="result-item"><span class="result-label">Profit Factor:</span><span class="result-value" id="profitFactor">1.91</span></div>
+  <div class="result-item"><span class="result-label">Average Trade Duration:</span><span class="result-value" id="avgTradeDuration">49 minutes</span></div>
+  <div class="result-item"><span class="result-label">Risk/Reward Ratio:</span><span class="result-value" id="riskRewardRatio">1.35</span></div>
+</div>
 
 <script>
 // Function to update the chart when symbol is changed
@@ -59,18 +147,18 @@ document.getElementById('backtestButton').onclick = function() {
   const avgTradeDuration = Math.floor(Math.random() * 60 + 5); // Random average duration (in minutes)
   const riskRewardRatio = (Math.random() * 2 + 1).toFixed(2); // Fake risk/reward ratio
   
-  // Display all metrics
-  document.getElementById('results').innerHTML = `
-    <h2>Backtest Results for ${symbol}:</h2>
-    <p><strong>Total Trades:</strong> ${trades}</p>
-    <p><strong>Win Rate:</strong> ${winRate}%</p>
-    <p><strong>Total Profit:</strong> +${profit}%</p>
-    <p><strong>Drawdown:</strong> -${drawdown}%</p>
-    <p><strong>Sharpe Ratio:</strong> ${sharpeRatio}</p>
-    <p><strong>Profit Factor:</strong> ${profitFactor}</p>
-    <p><strong>Average Trade Duration:</strong> ${avgTradeDuration} minutes</p>
-    <p><strong>Risk/Reward Ratio:</strong> ${riskRewardRatio}</p>
-  `;
+  // Populate the result section with values
+  document.getElementById('totalTrades').textContent = trades;
+  document.getElementById('winRate').textContent = `${winRate}%`;
+  document.getElementById('totalProfit').textContent = `+${profit}%`;
+  document.getElementById('drawdown').textContent = `-${drawdown}%`;
+  document.getElementById('sharpeRatio').textContent = sharpeRatio;
+  document.getElementById('profitFactor').textContent = profitFactor;
+  document.getElementById('avgTradeDuration').textContent = `${avgTradeDuration} minutes`;
+  document.getElementById('riskRewardRatio').textContent = riskRewardRatio;
+
+  // Show the result section
+  document.getElementById('results').style.display = 'block';
 };
 </script>
 

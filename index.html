@@ -164,6 +164,18 @@
       100% { transform: rotate(360deg); }
     }
 
+    /* Search Box Hint Style */
+    #symbol {
+      margin-right: 10px;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #555;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+
   </style>
 </head>
 <body>
@@ -172,12 +184,12 @@
 
 <button id="darkModeToggle">Toggle Dark Mode 🌙</button>
 
-<div style="display: flex; align-items: center;">
+<!-- Search Box with Hint -->
+<div>
   <input type="text" id="symbol" value="BTCUSD" placeholder="Enter symbol...">
-  <span style="margin-left: 10px; font-size: 14px; color: #0077b6;">Search your pair e.g btcusd, aapl...</span>
+  <span class="hint">Search your pair e.g btcusd, aapl...</span>
+  <button id="backtestButton">Run Backtest 🚀</button>
 </div>
-
-<button id="backtestButton">Run Backtest 🚀</button>
 
 <!-- Loading Spinner -->
 <div id="loading">
@@ -185,10 +197,12 @@
   Running backtest...
 </div>
 
+<!-- Graph Container -->
 <div id="chartContainer">
   <iframe id="chartIframe" src="https://s.tradingview.com/widgetembed/?symbol=BTCUSD&interval=15&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&theme=light&style=1&timezone=Etc/UTC" allowtransparency="true" scrolling="no"></iframe>
 </div>
 
+<!-- Results Section -->
 <div class="results-section">
   <div id="results" style="display:none;">
     <h2>Backtest Results</h2>
@@ -206,7 +220,7 @@
     <canvas id="performanceChart"></canvas>
   </div>
 
-  <!-- Download Results Button beside the Graph -->
+  <!-- Download Results Button -->
   <button id="downloadResultsButton" style="display:none;">Download Results 📄</button>
 </div>
 

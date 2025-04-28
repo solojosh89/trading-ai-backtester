@@ -2,19 +2,66 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Trading AI Backtester</title>
-
-  <!-- Include Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+  <title>Simple Trading AI Backtester</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
+      margin: 20px;
+      background-color: #f4f7fc;
+      color: #333;
     }
-    canvas {
+
+    h1 {
+      color: #0077b6;
+    }
+
+    #chart {
+      height: 500px;
+      margin-bottom: 20px;
+    }
+
+    #results {
       margin-top: 20px;
+      text-align: left;
+      font-size: 18px;
+      display: inline-block;
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      width: 80%;
+      max-width: 800px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     }
+
+    #results h2 {
+      font-size: 24px;
+      color: #0077b6;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .result-item {
+      padding: 10px;
+      border-bottom: 1px solid #f1f1f1;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .result-item:last-child {
+      border-bottom: none;
+    }
+
+    .result-label {
+      font-weight: bold;
+      color: #0077b6;
+    }
+
+    .result-value {
+      margin-left: 10px;
+      font-weight: normal;
+    }
+
     #backtestButton {
       padding: 12px 24px;
       font-size: 18px;
@@ -23,64 +70,130 @@
       color: white;
       border: none;
       border-radius: 5px;
+      transition: background-color 0.3s ease;
     }
+
+    #backtestButton:hover {
+      background-color: #005f8d;
+    }
+
+    #symbol {
+      padding: 10px;
+      font-size: 18px;
+      width: 200px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+      margin-bottom: 20px;
+    }
+
   </style>
 </head>
 <body>
 
 <h1>Trading Analysis Backtester 🔥</h1>
 
-<!-- Symbol input -->
-<label for="symbol">Enter Symbol (e.g., BTCUSD): </label>
+<!-- Input for Symbol -->
+<label for="symbol">Enter Symbol (e.g., BTCUSD, AAPL): </label>
 <input type="text" id="symbol" value="BTCUSD" placeholder="e.g., BTCUSD">
 
-<!-- Backtest button -->
+<!-- TradingView Chart -->
+<div id="chart">
+  <iframe id="chartIframe" 
+    src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_b43e1&symbol=BTCUSD&interval=15&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&studies=[]&theme=light&style=1&timezone=Etc/UTC&studies_overrides={}" 
+    width="100%" height="500" frameborder="0" allowtransparency="true" scrolling="no">
+  </iframe>
+</div>
+
+<!-- Run Backtest Button -->
 <button id="backtestButton">Run Backtest 🚀</button>
 
-<!-- Canvas for Chart.js -->
+<!-- Result Section -->
+<div id="results" style="display:none;">
+  <h2>Backtest Results</h2>
+  <div class="result-item"><span class="result-label">Total Trades:</span><span class="result-value" id="totalTrades">50</span></div>
+  <div class="result-item"><span class="result-label">Win Rate:</span><span class="result-value" id="winRate">78%</span></div>
+  <div class="result-item"><span class="result-label">Total Profit:</span><span class="result-value" id="totalProfit">+56%</span></div>
+  <div class="result-item"><span class="result-label">Drawdown:</span><span class="result-value" id="drawdown">-2%</span></div>
+  <div class="result-item"><span class="result-label">Sharpe Ratio:</span><span class="result-value" id="sharpeRatio">1.72</span></div>
+  <div class="result-item"><span class="result-label">Profit Factor:</span><span class="result-value" id="profitFactor">1.91</span></div>
+  <div class="result-item"><span class="result-label">Average Trade Duration:</span><span class="result-value" id="avgTradeDuration">49 minutes</span></div>
+  <div class="result-item"><span class="result-label">Risk/Reward Ratio:</span><span class="result-value" id="riskRewardRatio">1.35</span></div>
+</div>
+
+<!-- Canvas for Graphing -->
 <canvas id="backtestChart" width="400" height="200" style="display:none;"></canvas>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
-  // Function to simulate the backtest
-  document.getElementById('backtestButton').onclick = function() {
-    // Show the backtest chart
-    document.getElementById('backtestChart').style.display = 'block';
-    
-    // Call function to generate the chart
-    generateBacktestChart();
+// Function to update the chart when symbol is changed
+function updateChart() {
+  const symbol = document.getElementById('symbol').value.trim().toUpperCase(); // Clean the input and make it uppercase
+  
+  // Update TradingView chart iframe with the new symbol
+  const iframe = document.getElementById('chartIframe');
+  iframe.src = `https://s.tradingview.com/widgetembed/?frameElementId=tradingview_b43e1&symbol=${symbol}&interval=15&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&studies=[]&theme=light&style=1&timezone=Etc/UTC&studies_overrides={}`;
+}
+
+// Event listener for input change
+document.getElementById('symbol').addEventListener('input', updateChart);
+
+// Backtest Button click functionality (fake data for now)
+document.getElementById('backtestButton').onclick = function() {
+  const symbol = document.getElementById('symbol').value.trim().toUpperCase(); // Clean input
+  
+  // Fake backtest data for now
+  const trades = 50;
+  const winRate = Math.floor(Math.random() * 50) + 50; // Random between 50-100%
+  const profit = (winRate - 50) * 2; // Fake profit
+  const drawdown = Math.floor(Math.random() * 20); // Random drawdown between 0% and 20%
+  const sharpeRatio = (Math.random() * 2 + 1).toFixed(2); // Fake Sharpe Ratio between 1 and 3
+  const profitFactor = (Math.random() * 1.5 + 1.5).toFixed(2); // Fake profit factor
+  const avgTradeDuration = Math.floor(Math.random() * 60 + 5); // Random average duration (in minutes)
+  const riskRewardRatio = (Math.random() * 2 + 1).toFixed(2); // Fake risk/reward ratio
+  
+  // Populate the result section with values
+  document.getElementById('totalTrades').textContent = trades;
+  document.getElementById('winRate').textContent = `${winRate}%`;
+  document.getElementById('totalProfit').textContent = `+${profit}%`;
+  document.getElementById('drawdown').textContent = `-${drawdown}%`;
+  document.getElementById('sharpeRatio').textContent = sharpeRatio;
+  document.getElementById('profitFactor').textContent = profitFactor;
+  document.getElementById('avgTradeDuration').textContent = `${avgTradeDuration} minutes`;
+  document.getElementById('riskRewardRatio').textContent = riskRewardRatio;
+
+  // Show the result section
+  document.getElementById('results').style.display = 'block';
+  
+  // Show and update the graph with random data (for demo purposes)
+  const ctx = document.getElementById('backtestChart').getContext('2d');
+  const chartData = {
+    labels: Array.from({length: 50}, (_, i) => `Trade ${i+1}`), // 50 trades
+    datasets: [{
+      label: 'Equity Curve',
+      data: Array.from({length: 50}, () => Math.floor(Math.random() * 100) + 100), // Fake profits for each trade
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 1,
+      fill: false
+    }]
+  };
+  
+  const chartOptions = {
+    responsive: true,
+    scales: {
+      x: { beginAtZero: true },
+      y: { beginAtZero: true }
+    }
   };
 
-  // Function to generate and display the backtest chart
-  function generateBacktestChart() {
-    const ctx = document.getElementById('backtestChart').getContext('2d');
+  const backtestChart = new Chart(ctx, {
+    type: 'line',
+    data: chartData,
+    options: chartOptions
+  });
 
-    // Example backtest data
-    const chartData = {
-      labels: ['Trade 1', 'Trade 2', 'Trade 3', 'Trade 4', 'Trade 5'],
-      datasets: [{
-        label: 'Equity Curve',
-        data: [100, 110, 120, 125, 130], // Replace with real backtest data
-        borderColor: 'rgba(75, 192, 192, 1)',
-        borderWidth: 1,
-        fill: false
-      }]
-    };
-
-    const chartOptions = {
-      responsive: true,
-      scales: {
-        x: { beginAtZero: true },
-        y: { beginAtZero: true }
-      }
-    };
-
-    // Create the chart
-    new Chart(ctx, {
-      type: 'line',
-      data: chartData,
-      options: chartOptions
-    });
-  }
+  document.getElementById('backtestChart').style.display = 'block';
+};
 </script>
 
 </body>

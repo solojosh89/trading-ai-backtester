@@ -14,9 +14,13 @@
 
 <h1>Trading Analysis Backtester 🔥</h1>
 
+<!-- Input for Symbol -->
+<label for="symbol">Enter Symbol (e.g., BTCUSD, AAPL): </label>
+<input type="text" id="symbol" value="BTCUSD" placeholder="e.g., BTCUSD">
+
 <!-- TradingView Chart -->
 <div id="chart">
-  <iframe 
+  <iframe id="chartIframe" 
     src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_b43e1&symbol=BTCUSD&interval=15&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&studies=[]&theme=light&style=1&timezone=Etc/UTC&studies_overrides={}" 
     width="100%" height="500" frameborder="0" allowtransparency="true" scrolling="no">
   </iframe>
@@ -30,6 +34,13 @@
 
 <script>
 document.getElementById('backtestButton').onclick = function() {
+  const symbol = document.getElementById('symbol').value.trim();
+  
+  // Update TradingView chart iframe with the new symbol
+  const iframe = document.getElementById('chartIframe');
+  iframe.src = `https://s.tradingview.com/widgetembed/?frameElementId=tradingview_b43e1&symbol=${symbol}&interval=15&hidesidetoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&studies=[]&theme=light&style=1&timezone=Etc/UTC&studies_overrides={}`;
+  
+  // Show fake backtest results for now
   const trades = 50;
   const winRate = Math.floor(Math.random() * 50) + 50; // Random between 50-100%
   const profit = (winRate - 50) * 2; // fake profit
